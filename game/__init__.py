@@ -16,6 +16,8 @@ from utils.constant import (
     LIGHT_BLUE,
     WIDTH,
     WHITE,
+    RADIUS,
+    REWARD,
 )
 
 # Initialize PyGame
@@ -63,12 +65,13 @@ class SnakeGame:
         self.frame_iteration = 0
 
     def _place_food(self) -> None:
+        border = self.block_size + RADIUS
         foodx = (
-            round(random.randrange(0, self.width - self.block_size) / self.block_size)
+            round(random.randrange(border, self.width - border) / self.block_size)
             * self.block_size
         )
         foody = (
-            round(random.randrange(0, self.height - self.block_size) / self.block_size)
+            round(random.randrange(border, self.height - border) / self.block_size)
             * self.block_size
         )
         self.food: Point = Point(foodx, foody)
@@ -93,13 +96,13 @@ class SnakeGame:
         # Check if game over
         if self.is_collision() or self.frame_iteration > 100 * len(self.snake):
             game_over = True
-            reward = -10
+            reward = -REWARD
             return reward, game_over, self.score
 
         # Place new food or move
         if self.head == self.food:
             self.score += 1
-            reward = 10
+            reward = REWARD
             self._place_food()
         else:
             self.snake.pop()
@@ -144,12 +147,8 @@ class SnakeGame:
                 self.display, LIGHT_BLUE, pygame.Rect(pt.x + 4, pt.y + 4, 12, 12)
             )
 
-        # TODO: Change shape of food from rectangle to circle
-        pygame.draw.rect(
-            self.display,
-            RED,
-            pygame.Rect(self.food.x, self.food.y, self.block_size, self.block_size),
-        )
+        # // TODO: Change shape of food from rectangle to circle
+        pygame.draw.circle(self.display, RED, self.food, radius=RADIUS)
 
         font = pygame.font.SysFont(None, 25)
         text = font.render(f"Score: {str(self.score)}", True, WHITE)

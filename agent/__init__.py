@@ -1,4 +1,5 @@
 import datetime as dt
+import os
 import random
 from collections import deque
 from pathlib import Path
@@ -13,12 +14,14 @@ from utils.constant import BATCH_SIZE, GAMMA, LR, MAX_MEMORY
 
 
 class Agent:
-    def __init__(self) -> None:
+    def __init__(self, hidden_unit_model: int = 256) -> None:
         self.n_games = 0
         self.epsilon = 0
         self.gamma = GAMMA
         self.memory = deque(maxlen=MAX_MEMORY)
-        self.model = Linear_QNet(11, 256, 3)
+        self.model = Linear_QNet(
+            input_size=11, hidden_size=hidden_unit_model, output_size=3
+        )
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
     def get_state(self, game: SnakeGame) -> np.ndarray:
@@ -91,13 +94,30 @@ class Agent:
 
         return final_move
 
+    def load_best_weight(self, date: str, load_dir: Path = Path("weights")):
+        """
+        Load best weight for Linear_QNet model
 
-def train() -> None:
+        Args:
+            date (str): Its format is DD-MM-YYYY. It is what date the weight saves.
+            load_dir (Path, optional): Directory to load best weight's model.
+                Defaults to Path('weights').
+        """
+        best_weight = sorted(os.listdir(load_dir / date))[-1]
+        path = str(load_dir / date / best_weight)
+        print(f"Loading weight at {path}")
+        self.model.load_state_dict(torch.load(path, weights_only=True))
+
+
+def train(save_date: str, n_games: int) -> None:
     plot_scores = []
     plot_mean_scores = []
     total_score = 0
     record = 0
-    agent = Agent()
+    agent = Agent(hidden_unit_model=(512, 1024))
+    if save_date:
+        agent.load_best_weight(save_date)
+
     game = SnakeGame()
 
     while True:
@@ -126,7 +146,7 @@ def train() -> None:
             if score > record:
                 record = score
                 agent.model.save(
-                    weight_name=f"score_{score}.pt",
+                    weight_name=f"{score}.pt",
                     save_dir=Path(
                         f"weights/{dt.datetime.now().strftime(format='%d-%m-%Y')}"
                     ),
@@ -136,5 +156,9 @@ def train() -> None:
 
             plot_scores.append(score)
             total_score += score
-            plot_mean_scores.append(total_score / agent.n_games)
+            plot_mean_scores.append(round(total_score / agent.n_games, 4))
             plot_result(plot_scores, plot_mean_scores)
+
+        if n_games:
+            if n_games == agent.n_games:
+                return max(plot_scores)

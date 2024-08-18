@@ -1,5 +1,5 @@
 import os
-
+import numpy as np
 import torch
 from torch import nn, optim
 from pathlib import Path
@@ -10,9 +10,11 @@ class Linear_QNet(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super().__init__()
         self.layers = nn.Sequential(
-            nn.Linear(input_size, hidden_size),
+            nn.Linear(input_size, hidden_size[0]),
             nn.ReLU(),
-            nn.Linear(hidden_size, output_size),
+            nn.Linear(hidden_size[0], hidden_size[1]),
+            nn.ReLU(),
+            nn.Linear(hidden_size[1], output_size),
         )
 
     def forward(self, x):
@@ -34,10 +36,9 @@ class QTrainer:
         self.criterion = nn.MSELoss()
 
     def train_step(self, state, action, reward, next_state, done):
-        state, action, reward, next_state = map(
-            float_tensor, [state, action, reward, next_state]
-        )
-
+        state, action, reward, next_state = [
+            float_tensor(np.array(x)) for x in [state, action, reward, next_state]
+        ]
         if len(state.shape) == 1:  # (1, x)
             state, action, reward, next_state = map(
                 unsqueeze_0, [state, action, reward, next_state]
