@@ -5,19 +5,31 @@ This repository contains a Deep Q-Learning agent that learns how to play the cla
 ## Table of Contents
 
 - [Project Overview](#project-overview)
+- [Demo](#demo)
+- [Results](#results)
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Results](#results)
-- [Demo](#demo)
 - [References](#references)
 - [License](#license)
+
+## Demo
+
+Here’s a preview of the agent playing the Snake game:
+
+![Game Demo](path/to/game_demo.gif)
+
+## Results
+
+After training the model over 200 games, the following results were obtained:
+
+![Score Chart](visualize/19-08-2024/after_200_games.png)
+
+The chart above shows the agent's score over time, along with the average score per game.
 
 ## Project Overview
 
 The goal of this project is to apply deep reinforcement learning to teach an agent to play Snake. The agent is trained using a deep Q-network (DQN) that learns to optimize game performance over time by balancing exploration and exploitation.
-
-![demo]
 
 ### Key Concepts:
 - **Deep Q-Learning**: The model uses a neural network to approximate Q-values for each action and update them based on rewards.
@@ -62,19 +74,7 @@ python play.py
 
 You can modify hyperparameters such as the number of episodes, gamma, and learning rate in the `config.py` file.
 
-## Results
 
-After training the model over 200 games, the following results were obtained:
-
-![Score Chart](path/to/score_chart.png)
-
-The chart above shows the agent's score over time, along with the average score per game.
-
-## Demo
-
-Here’s a preview of the agent playing the Snake game:
-
-![Game Demo](path/to/game_demo.gif)
 
 ## References
 
