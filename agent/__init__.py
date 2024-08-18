@@ -114,7 +114,7 @@ def train(save_date: str, n_games: int) -> None:
     plot_mean_scores = []
     total_score = 0
     record = 0
-    agent = Agent(hidden_unit_model=(512, 1024))
+    agent = Agent(hidden_unit_model=512)
     if save_date:
         agent.load_best_weight(save_date)
 
@@ -152,12 +152,21 @@ def train(save_date: str, n_games: int) -> None:
                     ),
                 )
 
-            print("Game", agent.n_games, "| Score", score, "| Record:", record)
-
             plot_scores.append(score)
             total_score += score
-            plot_mean_scores.append(round(total_score / agent.n_games, 4))
+            mean_score = round(total_score / agent.n_games, 4)
+            plot_mean_scores.append(mean_score)
             plot_result(plot_scores, plot_mean_scores)
+            print(
+                "Game",
+                agent.n_games,
+                "| Score",
+                score,
+                "| Max score:",
+                record,
+                "| Mean score:",
+                mean_score,
+            )
 
         if n_games:
             if n_games == agent.n_games:

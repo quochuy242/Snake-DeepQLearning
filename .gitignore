@@ -163,4 +163,4 @@ cython_debug/
 
 # Ignore project's output
 weights/
-visualize/
+# visualize/
