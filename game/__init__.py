@@ -1,28 +1,28 @@
 import random
 from collections import namedtuple
 from enum import Enum
+from typing import Tuple
 
 import numpy as np
 import pygame
 
+from utils.constant import (
+    BLACK,
+    BLOCK_SIZE,
+    BLUE,
+    HEIGHT,
+    RED,
+    SPEED,
+    LIGHT_BLUE,
+    WIDTH,
+    WHITE,
+)
+
 # Initialize PyGame
 pygame.init()
 
-# Constant
-## Colors
-WHITE = (255, 255, 255)
-RED = (200, 0, 0)
-BLUE = (0, 0, 255)
-BLACK = (0, 0, 0)
 
-## Game dimensions
-BLOCK_SIZE = 20
-WIDTH = 800
-HEIGHT = 600
-SPEED = 40
-
-
-## Direction
+# Direction
 class Direction(Enum):
     RIGHT = 1
     LEFT = 2
@@ -75,7 +75,7 @@ class SnakeGame:
         if self.food in self.snake:
             self._place_food()
 
-    def play_step(self, action):
+    def play_step(self, action) -> Tuple[int, bool, int]:
         self.frame_iteration += 1
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -86,14 +86,15 @@ class SnakeGame:
         self._move(action)
         self.snake.insert(0, self.head)
 
-        # Check if game over
+        # Initial reward and flag game_over
         reward = 0
         game_over = False
 
+        # Check if game over
         if self.is_collision() or self.frame_iteration > 100 * len(self.snake):
             game_over = True
             reward = -10
-            return game_over, self.score
+            return reward, game_over, self.score
 
         # Place new food or move
         if self.head == self.food:
@@ -105,8 +106,11 @@ class SnakeGame:
 
         # Update UI and clock
         self._update_ui()
-        self.clock.tick(SPEED)  # adjust for faster/slower game speed
 
+        # Adjust for faster/slower game speed
+        self.clock.tick(SPEED)
+
+        # Return game over and score
         return reward, game_over, self.score
 
     def is_collision(self, pt=None):
@@ -137,7 +141,7 @@ class SnakeGame:
                 pygame.Rect(pt.x, pt.y, self.block_size, self.block_size),
             )
             pygame.draw.rect(
-                self.display, WHITE, pygame.Rect(pt.x + 4, pt.y + 4, 12, 12)
+                self.display, LIGHT_BLUE, pygame.Rect(pt.x + 4, pt.y + 4, 12, 12)
             )
 
         # TODO: Change shape of food from rectangle to circle

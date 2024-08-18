@@ -1,13 +1,9 @@
 import os
 
 import torch
-import torch.nn.functional as F
 from torch import nn, optim
 from pathlib import Path
-from functools import partial
-
-float_tensor = partial(torch.tensor, dtype=torch.float)
-unsqueeze_0 = partial(torch.unsqueeze, dim=0)
+from utils import float_tensor, unsqueeze_0
 
 
 class Linear_QNet(nn.Module):
@@ -49,20 +45,20 @@ class QTrainer:
             done = (done,)
 
         # Predict Q Values with current state
-        with torch.inference_mode():
-            pred = self.model(state)
-            target = pred.clone()
+        pred = self.model(state)
+        target = pred.clone()
 
-            for idx in range(len(done)):
-                Q_new = reward[idx]
-                if not done[idx]:
-                    Q_new = reward[idx] + self.gamma * torch.max(
-                        self.model(next_state[idx])
-                    )
+        for idx in range(len(done)):
+            Q_new = reward[idx]
+            if not done[idx]:
+                Q_new = reward[idx] + self.gamma * torch.max(
+                    self.model(next_state[idx])
+                )
 
-                target[idx][torch.argmax(action[idx]).items()] = Q_new
+            target[idx][torch.argmax(action[idx]).item()] = Q_new
 
-            self.optimizer.zero_grad()
-            loss = self.criterion(target, pred)
-            loss.backward()
-            self.optimizer.step()
+        # // Calculate Q_new = r + y * max(next_Q_values) and only do this if not done
+        self.optimizer.zero_grad()
+        loss = self.criterion(target, pred)
+        loss.backward()
+        self.optimizer.step()

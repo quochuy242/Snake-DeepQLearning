@@ -1,5 +1,4 @@
-from game import human_playing, SnakeGame
+from agent import train
 
 if __name__ == "__main__":
-    game_0 = SnakeGame()
-    human_playing(game_0)
+    train()
