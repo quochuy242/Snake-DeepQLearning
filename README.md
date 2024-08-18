@@ -17,7 +17,9 @@ This repository contains a Deep Q-Learning agent that learns how to play the cla
 
 Here’s a preview of the agent playing the Snake game:
 
-![Game Demo](path/to/game_demo.gif)
+![Game Demo](https://media.giphy.com/media/mGuhPkWIeaaqYYu6KU/giphy.gif)
+
+<p><a href="https://giphy.com/gifs/snake-deep-q-learning-mGuhPkWIeaaqYYu6KU">via GIPHY</a></p>
 
 ## Results
 
