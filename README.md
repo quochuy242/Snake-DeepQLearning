@@ -62,20 +62,13 @@ pip install -r requirements.txt
 
 ## Usage
 
-To train the agent:
+To train and watch what the agent do:
 
 ```bash
-python train.py
+python main.py
 ```
 
-To watch the trained agent play the game:
-
-```bash
-python play.py
-```
-
-You can modify hyperparameters such as the number of episodes, gamma, and learning rate in the `config.py` file.
-
+You can modify hyperparameters such as the number of episodes, gamma, and learning rate in the `utils/constant.py` file.
 
 
 ## References
@@ -86,7 +79,3 @@ You can modify hyperparameters such as the number of episodes, gamma, and learni
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-Bạn có thể tùy chỉnh thêm các thông tin như đường dẫn đến các hình ảnh hoặc video demo, cũng như thêm chi tiết cụ thể hơn cho dự án của mình.
